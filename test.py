@@ -1,6 +1,9 @@
-    with open("./user.json", "r+") as file:
-        userList = json.load(file)
-        if(username == userList["username"] and password == userList["password"]):
-            return(userList["username"], userList["password"], userList["ip"], userList["online"], userList["friend"])
-        else:
-            return(-1, -1, -1, -1, -1)
+import json
+    
+username = "asdas"
+password = "123452"    
+
+with open("./user.json", "r+") as file:
+    userList = json.load(file)
+    for idx in range(len(userList["userList"])):
+        print(userList["userList"][idx], "\n")
