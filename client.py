@@ -71,7 +71,7 @@ def outer_instruction():
         + "\n5.  Enter !info to see your info. (Name, Password, Online status, Friends)"
         + "\n6.  Enter !change_p <New_password> to change password."
         + "\n---------------------------"
-        + "\n7.  Enter !user_list to see all users."
+        + "\n7.  Enter !list to see all users."
         + "\n8.  Enter !add <Friend_username> to add a friend."
         + "\n9.  Enter !remove <Friend_username> to remove a friend."
         + "\n---------------------------"
