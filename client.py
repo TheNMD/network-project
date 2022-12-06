@@ -5,9 +5,7 @@ from datetime import datetime
 
 HOST = socket.gethostname()
 IP = socket.gethostbyname(HOST)
-PORT0 = 5002
-PORT1 = 5003
-PORT2 = 5004
+PORT0, PORT1, PORT2 = 5002, 5003, 5004
 SERVER_IP = "192.168.1.10"
 
 BG_GRAY = "#ABB2B9"
