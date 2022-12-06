@@ -66,11 +66,12 @@ def cmdInput():
         message = cmdInstruction()
         outputText.insert(END, "\n" + message)
     elif(command == "!logout"):
+        command += f" {username}"
         sktToServer.send(command.encode())
         root.after(1000)
         sktToServer.close()
-        root.destroy()
     else:
+        command += f" {username}"
         sktToServer.send(command.encode())
         message = sktToServer.recv(1024).decode()
         if(message == "!logoutOK"):

@@ -27,7 +27,7 @@ def listenToClient(sktFunc, addrFunc):
         rcommand = sktFunc.recv(1024).decode()
         rcommandArr = rcommand.split()
         if(rcommandArr[0] == '!login' and len(rcommandArr) == 3): # !login <Username> <Password>
-            (username, password, ip, online, friend) = cmdSearch(rcommandArr[1], rcommandArr[2], "!NA")
+            (username, password, ip, online, friend) = cmdSearch(rcommandArr[1], rcommandArr[2])
             if(username == -1):
                 message = "Login failed\n"
                 sktFunc.send(message.encode())
@@ -37,15 +37,15 @@ def listenToClient(sktFunc, addrFunc):
                 cmdUpdate(username, password, ip, online, friend)
                 message = "!loginOK"
                 sktFunc.send(message.encode())
-        elif(rcommandArr[0] == '!logout' and len(rcommandArr) == 1): # !logout
+        elif(rcommandArr[0] == '!logout' and len(rcommandArr) == 2): # !logout <Username>
             sktFunc.close()
-            (username, password, ip, online, friend) = cmdSearch("!NA", "!NA", addrFunc)
+            (username, password, ip, online, friend) = cmdSearch(rcommandArr[1], "!NA")
             online = 0
             cmdUpdate(username, password, ip, online, friend)
             print(f"{addrFunc} disconnected\n")
             break
-        elif(rcommandArr[0] == "!connect" and len(rcommandArr) == 2): # !connect <Username>            
-            (username, password, ip, online, friend) = cmdSearch(rcommandArr[1], "!NA", "!NA")
+        elif(rcommandArr[0] == "!connect" and len(rcommandArr) == 3): # !connect <Friend username> <Username>            
+            (username, password, ip, online, friend) = cmdSearch(rcommandArr[1], "!NA")
             if(username == -1):
                 message = f"User {rcommandArr[1]} not found\n"
                 sktFunc.send(message.encode())
@@ -58,27 +58,27 @@ def listenToClient(sktFunc, addrFunc):
                     sktFunc.send(message.encode())
                     message = ip
                     sktFunc.send(message.encode())
-        elif(rcommandArr[0] == "!info" and len(rcommandArr) == 1): # !info
-            (username, password, ip, online, friend) = cmdSearch("!NA", "!NA", addrFunc)
+        elif(rcommandArr[0] == "!info" and len(rcommandArr) == 2): # !info <Username>
+            (username, password, ip, online, friend) = cmdSearch(rcommandArr[1], "!NA")
             message = f"Username: {username}\nPassword: {password}\nIP: {ip}\nOnline: {online}\nFriend: {friend}\n"
             sktFunc.send(message.encode())
-        elif(rcommandArr[0] == "!change_p" and len(rcommandArr) == 2): # !change_p <Password>
-            (username, password, ip, online, friend) = cmdSearch("!NA", "!NA", addrFunc)
+        elif(rcommandArr[0] == "!change_p" and len(rcommandArr) == 3): # !change_p <Password> <Username>
+            (username, password, ip, online, friend) = cmdSearch(rcommandArr[2], "!NA")
             password = rcommandArr[1]
             cmdUpdate(username, password, ip, online, friend)
             message = "Password changed successfully\n"
             sktFunc.send(message.encode())
-        elif(rcommandArr[0] == "!list" and len(rcommandArr) == 1): # !list
+        elif(rcommandArr[0] == "!list" and len(rcommandArr) == 2): # !list <Username>
             message = "<Username> <Online> <Friend>\n" + cmdListClient()
             sktFunc.send(message.encode())
-        elif(rcommandArr[0] == "!add" and len(rcommandArr) == 2): # !add <Username>
-            (fusername, fpassword, fip, fonline, ffriend) = cmdSearch(rcommandArr[1], "!NA", "!NA")
+        elif(rcommandArr[0] == "!add" and len(rcommandArr) == 3): # !add <Friend username> <Username>
+            (fusername, fpassword, fip, fonline, ffriend) = cmdSearch(rcommandArr[1], "!NA")
             if(fusername == -1):
                 message = f"User {rcommandArr[1]} not found\n"
                 sktFunc.send(message.encode())
             else:
                 friendExist = False
-                (username, password, ip, online, friend) = cmdSearch("!NA", "!NA", addrFunc)
+                (username, password, ip, online, friend) = cmdSearch(rcommandArr[2], "!NA")
                 friendList = friend.split(":")
                 for frd in friendList:
                     if(frd == fusername):
@@ -93,14 +93,14 @@ def listenToClient(sktFunc, addrFunc):
                     cmdUpdate(username, password, ip, online, friend)
                     message = f"User {fusername} added to the friend list\n"
                     sktFunc.send(message.encode())
-        elif(rcommandArr[0] == "!remove" and len(rcommandArr) == 2): # !remove <Username>
-            (fusername, fpassword, fip, fonline, ffriend) = cmdSearch(rcommandArr[1], "!NA", "!NA")
+        elif(rcommandArr[0] == "!remove" and len(rcommandArr) == 3): # !remove <Friend username> <Username>
+            (fusername, fpassword, fip, fonline, ffriend) = cmdSearch(rcommandArr[1], "!NA")
             if(fusername == -1):
                 message = f"User {rcommandArr[1]} not found\n"
                 sktFunc.send(message.encode())
             else:
                 friendExist = False
-                (username, password, ip, online, friend) = cmdSearch("!NA", "!NA", addrFunc)
+                (username, password, ip, online, friend) = cmdSearch(rcommandArr[2], "!NA")
                 if(username == fusername):
                     message = f"You can't remove yourself from the friend list\n"
                     sktFunc.send(message.encode())
@@ -143,15 +143,12 @@ def cmdSearch(username, password, ip):
     with open("./user.json", "r+") as file:
         userList = json.load(file)
         for idx in range(len(userList["userList"])):
-            if((username == userList["userList"][idx]["username"] or username == "!NA") and (password == userList["userList"][idx]["password"] or password == "!NA") and (ip == userList["userList"][idx]["ip"] or ip == "!NA")):
-                if(ip != "!NA" and userList["userList"][idx]["online"] == 0):
-                    continue
-                else:
-                    return(userList["userList"][idx]["username"], 
-                        userList["userList"][idx]["password"], 
-                        userList["userList"][idx]["ip"], 
-                        userList["userList"][idx]["online"],
-                        userList["userList"][idx]["friend"])
+            if(username == userList["userList"][idx]["username"] and (password == userList["userList"][idx]["password"] or password == "!NA")):
+                return(userList["userList"][idx]["username"], 
+                    userList["userList"][idx]["password"], 
+                    userList["userList"][idx]["ip"], 
+                    userList["userList"][idx]["online"],
+                    userList["userList"][idx]["friend"])
         return(-1, -1, -1, -1, -1)
 
 def cmdUpdate(username, password, ip, online, friend):
@@ -181,7 +178,7 @@ def cmdInput():
     if(commandArr[0] == "!list" and len(commandArr) == 1): # !list
         outputText.insert(END, "\n" + cmdListServer())
     elif(commandArr[0] == "!add" and len(commandArr) == 3): # !add <Username> <Password>
-        (username, password, ip, online, friend) = cmdSearch(commandArr[1], "!NA", "!NA")
+        (username, password, ip, online, friend) = cmdSearch(commandArr[1], "!NA")
         if(username == -1):
             with open("./user.json", "r+") as file:
                 userList = json.load(file)
@@ -201,7 +198,7 @@ def cmdInput():
             message = f"User {commandArr[1]} already existed\n"
             outputText.insert(END, "\n" + message)
     elif(commandArr[0] == "!remove" and len(commandArr) == 2): # !remove <Username>
-        (username, password, ip, online, friend) = cmdSearch(commandArr[1], "!NA", "!NA")
+        (username, password, ip, online, friend) = cmdSearch(commandArr[1], "!NA")
         if(username == -1):
             message = f"User {commandArr[1]} not found\n"
             outputText.insert(END, "\n" + message)
