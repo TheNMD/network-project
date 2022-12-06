@@ -30,23 +30,23 @@ def listenToPeer():
             break
         print("\033[1;32m" + rmessage + "\033[1;37m")
 
-def talkToPeer(ip):
-    sktToPeer = socket.socket()
+# def talkToPeer(ip):
+#     sktToPeer = socket.socket()
     
-    try:
-        sktToPeer.connect((ip, PORT2))
-    except Exception as e:
-        print(e)
+#     try:
+#         sktToPeer.connect((ip, PORT2))
+#     except Exception as e:
+#         print(e)
     
-    while True:
-        message = str(input())
-        if(message == '!quit'):
-            sktToPeer.send(message.encode())
-            time.sleep(0.1)
-            sktToPeer.close()
-            break
-        currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
-        sktToPeer.send(f"[{currentTime}] {username} : {message}".encode()) 
+#     while True:
+#         message = str(input())
+#         if(message == '!quit'):
+#             sktToPeer.send(message.encode())
+#             time.sleep(0.1)
+#             sktToPeer.close()
+#             break
+#         currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+#         sktToPeer.send(f"[{currentTime}] {username} : {message}".encode()) 
 
 def cmdInstruction():
     toPrint = ("\n1.  Enter !logout to logout."   
@@ -81,18 +81,18 @@ if __name__ == '__main__':
     sktList = set()
     sktServer, sktToServer = socket.socket(), socket.socket()
 
-    # try:
-    #     sktToServer.connect((SERVER_IP, PORT1))
-    #     while True:
-    #         username = input("Username: ")
-    #         password = input("Password: ")
-    #         sktToServer.send(f"!login {username} {password}".encode())
-    #         result = sktToServer.recv(1024).decode()
-    #         if(result == "!loginOK"):
-    #             break
-    #         print(result)
-    # except Exception as e:
-    #     print(e)
+    try:
+        sktToServer.connect((SERVER_IP, PORT1))
+        while True:
+            username = input("Username: ")
+            password = input("Password: ")
+            sktToServer.send(f"!login {username} {password}".encode())
+            result = sktToServer.recv(1024).decode()
+            if(result == "!loginOK"):
+                break
+            print(result)
+    except Exception as e:
+        print(e)
 
     sktServer.bind((IP, PORT0))
     sktServer.listen()
