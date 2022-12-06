@@ -1,0 +1,46 @@
+{
+    "userList": [
+        {
+            "username": "UserA",
+            "password": "123456",
+            "ip": "192.16.1.3",
+            "online": 0,
+            "friend": "UserB:UserM"
+        },
+        {
+            "username": "UserB",
+            "password": "a1s5e9",
+            "ip": "192.168.1.10",
+            "online": 0,
+            "friend": "UserA:UserH"
+        },
+        {
+            "username": "UserH",
+            "password": "a12b34c56",
+            "ip": "192.168.1.5",
+            "online": 0,
+            "friend": "UserB:UserM"
+        },
+        {
+            "username": "UserM",
+            "password": "779abd",
+            "ip": "250.137.96.91",
+            "online": 0,
+            "friend": "UserO:UserA"
+        },
+        {
+            "username": "UserO",
+            "password": "abcdef",
+            "ip": "147.215.106.120",
+            "online": 0,
+            "friend": "UserM"
+        },
+        {
+            "username": "232",
+            "password": "sdwe",
+            "ip": "0.0.0.0",
+            "online": 0,
+            "friend": ""
+        }
+    ]
+}
