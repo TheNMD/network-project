@@ -48,7 +48,9 @@ def cmdInstruction():
         + "\n3.  Enter !info to see your info. (Name, Password, IP, Online, Friends)"
         + "\n4.  Enter !change_p <New password> to change password."
         + "\n5.  Enter !list to see all users."
-        + "\n6.  Enter !help to see instructions.\n")
+        + "\n6.  Enter !add <Username> to add a friend"
+        + "\n7.  Enter !remove <Username> to remove a friend"
+        + "\n8.  Enter !help to see instructions.\n")
 
 if __name__ == '__main__':
     sktList = set()
@@ -92,6 +94,7 @@ if __name__ == '__main__':
             
             continue
         print(result)
+    
 
 
 
