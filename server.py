@@ -54,7 +54,7 @@ def listenToClient(sktFunc, addrFunc):
                     message = f"{username} is not online\n"
                     sktFunc.send(message.encode())
                 else:
-                    message = "connectOK"
+                    message = "!connectOK"
                     sktFunc.send(message.encode())
                     message = ip
                     sktFunc.send(message.encode())
@@ -139,7 +139,7 @@ def cmdListClient():
             toPrint += f"{userList['userList'][idx]['username']} {userList['userList'][idx]['online']} {userList['userList'][idx]['friend']}\n"
     return toPrint
 
-def cmdSearch(username, password, ip):
+def cmdSearch(username, password):
     with open("./user.json", "r+") as file:
         userList = json.load(file)
         for idx in range(len(userList["userList"])):

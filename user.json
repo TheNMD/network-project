@@ -2,7 +2,7 @@
     "userList": [
         {
             "username": "UserA",
-            "password": "123111",
+            "password": "123456",
             "ip": "192.168.1.4",
             "online": 0,
             "friend": "UserA:UserM:UserO"
@@ -11,7 +11,7 @@
             "username": "UserB",
             "password": "a1s5e9",
             "ip": "192.168.1.10",
-            "online": 0,
+            "online": 1,
             "friend": "UserB:UserA:UserH"
         },
         {
