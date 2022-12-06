@@ -74,10 +74,9 @@ def cmdInput():
         command += f" {username}"
         sktToServer.send(command.encode())
         message = sktToServer.recv(1024).decode()
-        if(message == "!logoutOK"):
-            print()
-        elif(message == "!connectOK"):
+        if(message == "!connectOK"):
             message = sktToServer.recv(1024).decode()
+            print(message)
         else:
             outputText.insert(END, "\n" + message)  
     inputText.delete(0, END)
