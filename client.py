@@ -5,7 +5,7 @@ from datetime import datetime
 
 HOST = socket.gethostname()
 IP = socket.gethostbyname(HOST)
-PORT0, PORT1, PORT2 = 5002, 5003, 5004
+PORT = 5002
 SERVER_IP = "192.168.1.10"
 
 BG_GRAY = "#ABB2B9"
@@ -34,7 +34,7 @@ def listenToPeer():
 #     sktToPeer = socket.socket()
     
 #     try:
-#         sktToPeer.connect((ip, PORT2))
+#         sktToPeer.connect((ip, PORT))
 #     except Exception as e:
 #         print(e)
     
@@ -82,7 +82,7 @@ if __name__ == '__main__':
     sktServer, sktToServer = socket.socket(), socket.socket()
 
     try:
-        sktToServer.connect((SERVER_IP, PORT1))
+        sktToServer.connect((SERVER_IP, PORT))
         while True:
             username = input("Username: ")
             password = input("Password: ")
@@ -94,7 +94,7 @@ if __name__ == '__main__':
     except Exception as e:
         print(e)
 
-    sktServer.bind((IP, PORT0))
+    sktServer.bind((IP, PORT))
     sktServer.listen()
     t = Thread(target=listenToPeer, daemon=True)
     t.start()
@@ -108,7 +108,7 @@ if __name__ == '__main__':
     inputText = Entry(root, bg="#2C3E50", fg=TEXT_COLOR, font=FONT, width=55)
     inputText.grid(row=2, column=0)
     Button(root, text="Send", font=FONT_BOLD, bg=BG_GRAY, command=cmdInput).grid(row=2, column=1)
-    outputText.insert(END, "\n" + f"{HOST} : {IP} : {PORT0}")
+    outputText.insert(END, "\n" + f"{HOST} : {IP} : {PORT}")
     outputText.insert(END, "\n" + cmdInstruction())
     
     root.mainloop()
