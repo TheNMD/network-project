@@ -23,8 +23,8 @@ def listenToPeer():
         rmessage = sktFromPeer.recv(1024).decode()
         currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
         if(rmessage == "!quit"):
-            print("\033[1;32m" + f"\n[{currentTime}] *{addrFromPeer[0]} disconnected*" + "\033[1;37m")
             sktFromPeer.close()
+            print("\033[1;32m" + f"\n[{currentTime}] *{addrFromPeer[0]} disconnected*" + "\033[1;37m")
             t = Thread(target=listenToPeer, daemon=True)
             t.start()
             break
@@ -62,10 +62,14 @@ def cmdInstruction():
 def cmdInput():
     command = inputText.get()
     outputText.insert(END, "\n" + f"Command: {command}")
-    command = str(input())
     if(command == "!help"):
         message = cmdInstruction()
-        outputText.insert(END, "\n" + message)  
+        outputText.insert(END, "\n" + message)
+    elif(command == "!logout"):
+        sktToServer.send(command.encode())
+        root.after(1000)
+        sktToServer.close()
+        root.destroy()
     else:
         sktToServer.send(command.encode())
         message = sktToServer.recv(1024).decode()
