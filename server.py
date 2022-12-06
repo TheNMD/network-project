@@ -1,11 +1,17 @@
-import socket, json, time
+import socket, json
+from tkinter import *
 from threading import Thread
 from datetime import datetime
 
 HOST = socket.gethostname()
 IP = socket.gethostbyname(HOST)
 PORT = 5002
-print(f"\n{HOST} : {IP} : {PORT}")
+
+BG_GRAY = "#ABB2B9"
+BG_COLOR = "#17202A"
+TEXT_COLOR = "#EAECEE"
+FONT = "Helvetica 14"
+FONT_BOLD = "Helvetica 13 bold"
 
 def acceptClient():
     while True:
@@ -115,7 +121,7 @@ def cmdSearch(username, password, ip):
                        userList["userList"][idx]["ip"], 
                        userList["userList"][idx]["online"],
                        userList["userList"][idx]["friend"])
-        return(-1, -1, -1, -1)
+        return(-1, -1, -1, -1, -1)
 
 def cmdUpdate(username, password, ip, online, friend):
     file = open("./user.json", "r+")
@@ -131,10 +137,72 @@ def cmdUpdate(username, password, ip, online, friend):
         json.dump(userList, file, indent = 4)
     
 def cmdInstruction():
-    print("\n1. Press !list to show all user list."
-        + "\n2. Enter !add <Username> <Password> to add a user."
-        + "\n3. Enter !remove <Username> to remove a user."
-        + "\n4. Enter !help to see instructions.\n")
+    toPrint = ("\n1. Enter !list to show all user list."
+             + "\n2. Enter !add <Username> <Password> to add a user."
+             + "\n3. Enter !remove <Username> to remove a user."
+             + "\n4. Enter !help to see instructions.\n")
+    return toPrint
+
+def cmdInput():
+    command = inputText.get()
+    commandArr = command.split()
+    outputText.insert(END, "\n" + f"Command: {command}")
+    if(commandArr[0] == "!list" and len(commandArr) == 1): # !list
+        outputText.insert(END, "\n" + cmdList())
+    elif(commandArr[0] == "!add" and len(commandArr) == 3): # !add <Username> <Password>
+        (username, password, ip, online, friend) = cmdSearch(commandArr[1], "!NA", "!NA")
+        if(username == -1):
+            with open("./user.json", "r+") as file:
+                userList = json.load(file)
+                newUser = {
+                    "username": commandArr[1],
+                    "password": commandArr[2],
+                    "ip": "0.0.0.0",
+                    "online": 0,
+                    "friend": ""
+                }
+                userList["userList"].append(newUser)
+                file.seek(0)
+                json.dump(userList, file, indent = 4)
+            message = f"User {commandArr[1]} added successfully\n"
+            outputText.insert(END, "\n" + message)
+        else:
+            message = f"User {commandArr[1]} already existed\n"
+            outputText.insert(END, "\n" + message)
+    elif(commandArr[0] == "!remove" and len(commandArr) == 2): # !remove <Username>
+        (username, password, ip, online, friend) = cmdSearch(commandArr[1], "!NA", "!NA")
+        if(username == -1):
+            message = f"User {commandArr[1]} not found\n"
+            outputText.insert(END, "\n" + message)
+        else:
+            file = open("./user.json", "r+")
+            userList = json.load(file)
+            for idx in range(len(userList["userList"])):
+                if(commandArr[1] == userList["userList"][idx]["username"]):
+                    del userList["userList"][idx]
+            file.close()
+            with open("./user.json", "w+") as file:
+                json.dump(userList, file, indent = 4)
+            message = f"User {commandArr[1]} deleted successfully\n"
+            outputText.insert(END, "\n" + message)
+    elif(commandArr[0] == "!help" and len(commandArr) == 1): # !help
+        message = cmdInstruction()
+        outputText.insert(END, "\n" + message)     
+    else:
+        message = "Invalid command\n"
+        outputText.insert(END, "\n" + message)
+    inputText.delete(0, END)
+
+def get_geometry():
+    chatbox = Toplevel(root)
+    chatbox.title("Menu")
+    outputText = Text(chatbox, bg=BG_COLOR, fg=TEXT_COLOR, font=FONT, width=60)
+    outputText.grid(row=1, column=0, columnspan=2)
+    scrollbar = Scrollbar(outputText)
+    scrollbar.place(relheight=1, relx=0.974)
+    inputText = Entry(chatbox, bg="#2C3E50", fg=TEXT_COLOR, font=FONT, width=55)
+    inputText.grid(row=2, column=0)
+    Button(chatbox, text="Send", font=FONT_BOLD, bg=BG_GRAY, command=cmdInput).grid(row=2, column=1)
 
 if __name__ == '__main__':
     sktList = set()
@@ -145,50 +213,17 @@ if __name__ == '__main__':
     t = Thread(target=acceptClient, daemon=True)
     t.start()
     
-    cmdInstruction()
+    root = Tk()
+    root.title("Menu")
+    outputText = Text(root, bg=BG_COLOR, fg=TEXT_COLOR, font=FONT, width=60)
+    outputText.grid(row=1, column=0, columnspan=2)
+    scrollbar = Scrollbar(outputText)
+    scrollbar.place(relheight=1, relx=0.974)
+    inputText = Entry(root, bg="#2C3E50", fg=TEXT_COLOR, font=FONT, width=55)
+    inputText.grid(row=2, column=0)
+    Button(root, text="Send", font=FONT_BOLD, bg=BG_GRAY, command=cmdInput).grid(row=2, column=1)
+    outputText.insert(END, "\n" + f"{HOST} : {IP} : {PORT}")
+    outputText.insert(END, "\n" + cmdInstruction())
     
-    while True:
-        command = str(input())
-        commandArr = command.split()
-        if(commandArr[0] == "!list" and len(commandArr) == 1): # !list
-            print(cmdList())
-        elif(commandArr[0] == "!add" and len(commandArr) == 3): # !add <Username> <Password>
-            (username, password, ip, online, friend) = cmdSearch(commandArr[1], "!NA", "!NA")
-            if(username == -1):
-                with open("./user.json", "r+") as file:
-                    userList = json.load(file)
-                    newUser = {
-                        "username": commandArr[1],
-                        "password": commandArr[2],
-                        "ip": "0.0.0.0",
-                        "online": 0,
-                        "friend": ""
-                    }
-                    userList["userList"].append(newUser)
-                    file.seek(0)
-                    json.dump(userList, file, indent = 4)
-                message = f"User {commandArr[1]} added successfully\n"
-                print(message)
-            else:
-                message = f"User {commandArr[1]} already existed\n"
-                print(message)
-        elif(commandArr[0] == "!remove" and len(commandArr) == 2): # !remove <Username>
-            (username, password, ip, online, friend) = cmdSearch(commandArr[1], "!NA", "!NA")
-            if(username == -1):
-                message = f"User {commandArr[1]} not found\n"
-                print(message)
-            else:
-                file = open("./user.json", "r+")
-                userList = json.load(file)
-                for idx in range(len(userList["userList"])):
-                    if(commandArr[1] == userList["userList"][idx]["username"]):
-                        del userList["userList"][idx]
-                file.close()
-                with open("./user.json", "w+") as file:
-                    json.dump(userList, file, indent = 4)
-                message = f"User {commandArr[1]} deleted successfully\n"
-                print(message)
-        elif(commandArr[0] == "!help" and len(commandArr) == 1): # !help
-            cmdInstruction()        
-        else:
-            print("Invalid command\n")
+    root.mainloop()
+    
