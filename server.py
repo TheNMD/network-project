@@ -5,7 +5,7 @@ from datetime import datetime
 
 HOST = socket.gethostname()
 IP = socket.gethostbyname(HOST)
-PORT = 5002
+PORT = 5003
 
 BG_GRAY = "#ABB2B9"
 BG_COLOR = "#17202A"
