@@ -6,7 +6,7 @@ from datetime import datetime
 HOST = socket.gethostname()
 IP = socket.gethostbyname(HOST)
 SPORT = 5002
-PORT = 5003
+PORT = 5002
 SERVER_IP = "192.168.1.10"
 
 BG_GRAY = "#ABB2B9"
@@ -188,7 +188,7 @@ def cmdInput():
         message = "!connectOK"
         if(message == "!connectOK"):
             # ip = sktToServer.recv(1024).decode()
-            ip = "192.168.1.6"
+            ip = "192.168.0.133"
             t = Thread(target=talkToPeer, args=(ip, root), daemon=True)
             t.start()
         else:
