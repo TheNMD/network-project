@@ -39,6 +39,7 @@ def listenToPeer(sktFunc, addrFunc, root):
                     if not byteRead:
                         print("Done") 
                         break
+                    root.after(1000)
                     sktFunc.sendall(byteRead)
         else:
             outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
@@ -103,6 +104,7 @@ def talkToPeer(ip, root):
                         print("Done")  
                         break
                     sktToPeer.sendall(byteRead)
+                    root.after(1000)
             inputText.delete(0, END)
         else:
             outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
