@@ -29,6 +29,7 @@ def listenToPeer(sktFunc, addrFunc, root):
         if(message == "!quit"):
             sktFunc.send(message.encode())
             outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
+            outputText.insert(END, "\n" + f"System: Chatbox will be closed after a few seconds")
         else:
             outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
             sktFunc.send(message.encode())
@@ -56,6 +57,8 @@ def listenToPeer(sktFunc, addrFunc, root):
             print("\033[1;32m" + f"\n[{currentTime}] {addrFunc} disconnected" + "\033[1;37m")
             break
         outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
+        
+    newWindow.destroy()
 
 def talkToPeer(ip, root):
     def messageInput():
@@ -64,6 +67,7 @@ def talkToPeer(ip, root):
         if(message == "!quit"):
             sktToPeer.send(message.encode())
             outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
+            outputText.insert(END, "\n" + f"System: Chatbox will be closed after a few seconds")
         else:
             outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
             sktToPeer.send(message.encode())
@@ -85,7 +89,7 @@ def talkToPeer(ip, root):
     inputText = Entry(newWindow, bg="#2C3E50", fg=TEXT_COLOR, font=FONT, width=55)
     inputText.grid(row=2, column=0)
     Button(newWindow, text="Send", font=FONT_BOLD, bg=BG_GRAY, command=messageInput).grid(row=2, column=1)
-    outputText.insert(END, "\n" + f"Enter !q to stop chatting")
+    outputText.insert(END, "\n" + f"Enter !quit to stop chatting")
     
     while True:
         rmessage = sktToPeer.recv(1024).decode()
@@ -99,7 +103,7 @@ def talkToPeer(ip, root):
             break
         outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
         
-    root.destroy()
+    newWindow.destroy()
 
 
 def cmdInstruction():
