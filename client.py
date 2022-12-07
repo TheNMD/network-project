@@ -108,10 +108,12 @@ def cmdInput():
         sktToServer.close()
     else:
         command += f" {username}"
-        sktToServer.send(command.encode())
-        message = sktToServer.recv(1024).decode()
+        # sktToServer.send(command.encode())
+        # message = sktToServer.recv(1024).decode()
+        message = "!connectOK"
         if(message == "!connectOK"):
-            message = sktToServer.recv(1024).decode()
+            # ip = sktToServer.recv(1024).decode()
+            ip = "192.168.1.6"
             t = Thread(target=talkToPeer, args=(ip, root), daemon=True)
             t.start()
         else:
@@ -123,18 +125,18 @@ if __name__ == '__main__':
     sktList = set()
     sktServer, sktToServer = socket.socket(), socket.socket()
 
-    try:
-        sktToServer.connect((SERVER_IP, PORT))
-        while True:
-            username = input("Username: ")
-            password = input("Password: ")
-            sktToServer.send(f"!login {username} {password}".encode())
-            result = sktToServer.recv(1024).decode()
-            if(result == "!loginOK"):
-                break
-            print(result)
-    except Exception as e:
-        print(e)
+    # try:
+    #     sktToServer.connect((SERVER_IP, PORT))
+    #     while True:
+    #         username = input("Username: ")
+    #         password = input("Password: ")
+    #         sktToServer.send(f"!login {username} {password}".encode())
+    #         result = sktToServer.recv(1024).decode()
+    #         if(result == "!loginOK"):
+    #             break
+    #         print(result)
+    # except Exception as e:
+    #     print(e)
 
     root = Tk()
     root.title("Menu")
