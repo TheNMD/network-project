@@ -5,7 +5,8 @@ from datetime import datetime
 
 HOST = socket.gethostname()
 IP = socket.gethostbyname(HOST)
-PORT = 5002
+SPORT = 5002
+PORT = 5003
 SERVER_IP = "192.168.1.10"
 
 BG_GRAY = "#ABB2B9"
@@ -62,7 +63,7 @@ def listenToPeer(sktFunc, addrFunc, root):
         rmessage = sktFunc.recv(1024).decode()
         rmessageArr = rmessage.split()
         currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
-        if(rmessageArr[0] == "!quit"):
+        if(rmessageArr[0] == "!quit"): # !quit
             sktFunc.send(rmessage.encode())
             outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
             outputText.insert(END, "\n" + f"System: Chatbox will be closed after a few seconds")
@@ -70,7 +71,7 @@ def listenToPeer(sktFunc, addrFunc, root):
             root.after(5000)
             sktFunc.close()
             break
-        elif(rmessageArr[0] == "!send"):
+        elif(rmessageArr[0] == "!send"): # !send <File> <Size>
             filename = f"./file/{rmessageArr[1]}"
             filesize = int(rmessageArr[2])
             totalWrite = 0
@@ -134,7 +135,7 @@ def talkToPeer(ip, root):
         rmessage = sktToPeer.recv(1024).decode()
         rmessageArr = rmessage.split()
         currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
-        if(rmessageArr[0] == "!quit"):
+        if(rmessageArr[0] == "!quit"): # !quit
             sktToPeer.send(rmessage.encode())
             outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
             outputText.insert(END, "\n" + f"System: Chatbox will be closed after a few seconds")
@@ -142,7 +143,7 @@ def talkToPeer(ip, root):
             root.after(5000)
             sktToPeer.close()
             break
-        elif(rmessageArr[0] == "!send"):
+        elif(rmessageArr[0] == "!send"): # !send <File> <Size>
             filename = f"./file/{rmessageArr[1]}"
             filesize = int(rmessageArr[2])
             totalWrite = 0
@@ -200,7 +201,7 @@ if __name__ == '__main__':
     sktServer, sktToServer = socket.socket(), socket.socket()
 
     # try:
-    #     sktToServer.connect((SERVER_IP, PORT))
+    #     sktToServer.connect((SERVER_IP, SPORT))
     #     while True:
     #         username = input("Username: ")
     #         password = input("Password: ")
