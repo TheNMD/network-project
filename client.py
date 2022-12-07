@@ -36,7 +36,7 @@ def listenToPeer(sktFunc, addrFunc, root):
             totalRead = 0
             message += f" {filesize}"
             sktFunc.send(message.encode())
-            with open(message, "rb") as file:                
+            with open(filename, "rb") as file:                
                 while(totalRead < filesize):
                     byteRead = file.read(1024)
                     sktFunc.send(byteRead)
