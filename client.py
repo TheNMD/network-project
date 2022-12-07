@@ -142,7 +142,7 @@ def talkToPeer(ip, root):
             root.after(5000)
             sktToPeer.close()
             break
-        elif(rmessageArr[1] == "!send"):
+        elif(rmessageArr[0] == "!send"):
             filename = f"./file/{rmessageArr[1]}"
             filesize = int(rmessageArr[2])
             totalWrite = 0
