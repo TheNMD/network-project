@@ -72,11 +72,12 @@ def listenToPeer(sktFunc, addrFunc, root):
             filename = f"./file/{rmessageArr[1]}"
             with open(filename, "wb") as file:
                 while True:
-                    byteRead = sktFunc.recv(1024)
-                    if not byteRead:
-                        print("stopping")    
+                    byteWrite = sktFunc.recv(1024)
+                    print("***")
+                    if not byteWrite:
+                        print("Stopping")    
                         break
-                    file.write(byteRead)
+                    file.write(byteWrite)
         else:
             outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
         
@@ -97,6 +98,7 @@ def talkToPeer(ip, root):
             with open(filename, "rb") as file:
                 while True:
                     byteRead = file.read(1024)
+                    print("***")
                     if not byteRead:
                         print("Done")  
                         break
@@ -141,11 +143,11 @@ def talkToPeer(ip, root):
             filename = f"./file/{rmessageArr[1]}"
             with open(filename, "wb") as file:
                 while True:
-                    byteRead = sktToPeer.recv(1024)
-                    if not byteRead:
+                    byteWrite = sktToPeer.recv(1024)
+                    if not byteWrite:
                         print("Stopping")     
                         break
-                    file.write(byteRead)
+                    file.write(byteWrite)
         else:
             outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
         
