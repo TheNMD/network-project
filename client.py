@@ -32,9 +32,9 @@ def listenToPeer(sktFunc, addrFunc, root):
             outputText.insert(END, "\n" + f"[{currentTime}] You: {message}") 
         elif(messageArr[0] == "!send" and len(messageArr) == 2): # !send <File>
             filename = f"./file/{messageArr[1]}"
-            filesize = f" {messageArr[2]}"
+            filesize = os.path.getsize(filename)
             totalRead = 0
-            message += filesize
+            message += f" {filesize}"
             sktFunc.send(message.encode())
             with open(message, "rb") as file:                
                 while(totalRead < filesize):
@@ -94,9 +94,9 @@ def talkToPeer(ip, root):
             inputText.delete(0, END)
         elif(messageArr[0] == "!send" and len(messageArr) == 2): # !send <File>
             filename = f"./file/{messageArr[1]}"
-            filesize = f" {messageArr[2]}"
+            filesize = os.path.getsize(filename)
             totalRead = 0
-            message += filesize
+            message += f" {filesize}"
             sktToPeer.send(message.encode())
             with open(filename, "rb") as file:
                 while(totalRead < filesize):
