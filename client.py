@@ -43,17 +43,17 @@ def listenToPeer(sktFunc, addrFunc, root):
     inputText = Entry(newWindow, bg="#2C3E50", fg=TEXT_COLOR, font=FONT, width=55)
     inputText.grid(row=2, column=0)
     Button(newWindow, text="Send", font=FONT_BOLD, bg=BG_GRAY, command=messageInput).grid(row=2, column=1)
-    outputText.insert(END, "\n" + f"Enter !q to stop chatting")
+    outputText.insert(END, "\n" + f"Enter !quit to stop chatting")
     
     while True:
         rmessage = sktFunc.recv(1024).decode()
         currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
         if(rmessage == "!quit"):
             sktFunc.send(rmessage.encode())
-            root.after(1000)
+            root.after(3000)
             sktFunc.close()
             outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
-            print("\033[1;32m" + f"\n[{currentTime}] {addrFunc[0]} disconnected" + "\033[1;37m")
+            print("\033[1;32m" + f"\n[{currentTime}] {addrFunc} disconnected" + "\033[1;37m")
             break
         outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
 
@@ -92,12 +92,14 @@ def talkToPeer(ip, root):
         currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
         if(rmessage == "!quit"):
             sktToPeer.send(rmessage.encode())
-            root.after(1000)
+            root.after(3000)
             sktToPeer.close()
             outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
             print("\033[1;32m" + f"\n[{currentTime}] {ip} disconnected" + "\033[1;37m")
             break
         outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
+        
+    root.destroy()
 
 
 def cmdInstruction():
