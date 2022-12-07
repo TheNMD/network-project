@@ -32,15 +32,15 @@ def listenToPeer(sktFunc, addrFunc, root):
             outputText.insert(END, "\n" + f"[{currentTime}] You: {message}") 
         elif(messageArr[0] == "!send" and len(messageArr) == 2): # !send <File>
             filename = f"./file/{messageArr[1]}"
+            filesize = f" {messageArr[2]}"
+            totalRead = 0
+            message += filesize
             sktFunc.send(message.encode())
-            with open(filename, "rb") as file:
-                while True:
+            with open(message, "rb") as file:                
+                while(totalRead < filesize):
                     byteRead = file.read(1024)
-                    if not byteRead:
-                        print("Done") 
-                        break
-                    root.after(1000)
-                    sktFunc.sendall(byteRead)
+                    sktFunc.send(byteRead)
+                    totalRead += len(byteRead)
         else:
             outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
             sktFunc.send(message.encode())
@@ -71,14 +71,13 @@ def listenToPeer(sktFunc, addrFunc, root):
             break
         elif(rmessageArr[0] == "!send"):
             filename = f"./file/{rmessageArr[1]}"
+            filesize = int(rmessageArr[2])
+            totalWrite = 0
             with open(filename, "wb") as file:
-                while True:
+                while(totalWrite < filesize):
                     byteWrite = sktFunc.recv(1024)
-                    print("***")
-                    if not byteWrite:
-                        print("Stopping")    
-                        break
                     file.write(byteWrite)
+                    totalWrite += len(byteWrite)
         else:
             outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
         
@@ -95,16 +94,15 @@ def talkToPeer(ip, root):
             inputText.delete(0, END)
         elif(messageArr[0] == "!send" and len(messageArr) == 2): # !send <File>
             filename = f"./file/{messageArr[1]}"
+            filesize = f" {messageArr[2]}"
+            totalRead = 0
+            message += filesize
             sktToPeer.send(message.encode())
             with open(filename, "rb") as file:
-                while True:
+                while(totalRead < filesize):
                     byteRead = file.read(1024)
-                    print("***")
-                    if not byteRead:
-                        print("Done")  
-                        break
-                    sktToPeer.sendall(byteRead)
-                    root.after(1000)
+                    sktToPeer.send(byteRead)
+                    totalRead += len(byteRead)
             inputText.delete(0, END)
         else:
             outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
@@ -143,13 +141,13 @@ def talkToPeer(ip, root):
             break
         elif(rmessageArr[1] == "!send"):
             filename = f"./file/{rmessageArr[1]}"
+            filesize = int(rmessageArr[2])
+            totalWrite = 0
             with open(filename, "wb") as file:
-                while True:
+                while(totalWrite < filesize):
                     byteWrite = sktToPeer.recv(1024)
-                    if not byteWrite:
-                        print("Stopping")     
-                        break
                     file.write(byteWrite)
+                    totalWrite += len(byteWrite)
         else:
             outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
         
