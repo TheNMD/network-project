@@ -58,7 +58,6 @@ def listenToPeer(sktFunc, addrFunc, root):
 
 def talkToPeer(ip, root):
     def messageInput():
-        outputText.insert(END, "\n" + f"Enter !q to stop chatting")
         message = inputText.get()
         if(message == "!quit"):
             sktToPeer.send(message.encode())
@@ -88,12 +87,15 @@ def talkToPeer(ip, root):
     Button(newWindow, text="Send", font=FONT_BOLD, bg=BG_GRAY, command=messageInput).grid(row=2, column=1)
     outputText.insert(END, "\n" + f"Enter !q to stop chatting")
     
-    rmessage = sktToPeer.recv(1024).decode()
-    currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
-    if(rmessage == "!quit"):
-        sktToPeer.close()
+    while True:
+        rmessage = sktToPeer.recv(1024).decode()
+        currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+        if(rmessage == "!quit"):
+            sktToPeer.close()
+            outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
+            print("\033[1;32m" + f"\n[{currentTime}] {ip} disconnected" + "\033[1;37m")
+            break
         outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
-        print("\033[1;32m" + f"\n[{currentTime}] {ip} disconnected" + "\033[1;37m")
 
 
 def cmdInstruction():
