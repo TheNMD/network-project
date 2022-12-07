@@ -188,7 +188,7 @@ def cmdInput():
         message = "!connectOK"
         if(message == "!connectOK"):
             # ip = sktToServer.recv(1024).decode()
-            ip = "192.168.1.6"
+            ip = "192.168.0.133"
             t = Thread(target=talkToPeer, args=(ip, root), daemon=True)
             t.start()
         else:
