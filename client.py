@@ -1,4 +1,4 @@
-import socket, time
+import socket, os
 from tkinter import *
 from threading import Thread
 from datetime import datetime
@@ -25,10 +25,20 @@ def acceptPeer(root):
 def listenToPeer(sktFunc, addrFunc, root):
     def messageInput():
         message = inputText.get()
+        messageArr = message.split()
         currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
-        if(message == "!quit"):
+        if(messageArr[0] == "!quit" and len(messageArr) == 1): # !quit
             sktFunc.send(message.encode())
-            outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
+            outputText.insert(END, "\n" + f"[{currentTime}] You: {message}") 
+        elif(messageArr[0] == "!send" and len(messageArr) == 2): # !send <File>
+            filename = f"./file/{messageArr[1]}"
+            sktFunc.send(message.encode())
+            with open(filename, "rb") as file:
+                while True:
+                    byteRead = file.read(1024)
+                    if not byteRead:
+                        break
+                    sktFunc.sendall(byteRead)
         else:
             outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
             sktFunc.send(message.encode())
@@ -47,8 +57,9 @@ def listenToPeer(sktFunc, addrFunc, root):
     
     while True:
         rmessage = sktFunc.recv(1024).decode()
+        rmessageArr = rmessage.split()
         currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
-        if(rmessage == "!quit"):
+        if(rmessageArr[0] == "!quit"):
             sktFunc.send(rmessage.encode())
             outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
             outputText.insert(END, "\n" + f"System: Chatbox will be closed after a few seconds")
@@ -56,17 +67,36 @@ def listenToPeer(sktFunc, addrFunc, root):
             root.after(5000)
             sktFunc.close()
             break
-        outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
+        elif(rmessageArr[0] == "!send"):
+            filename = rmessageArr[1]
+            with open(filename, "wb") as file:
+                while True:
+                    byteRead = sktFunc.recv(1024)
+                    if not byteRead:    
+                        break
+                    file.write(byteRead)
+        else:
+            outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
         
     newWindow.destroy()
 
 def talkToPeer(ip, root):
     def messageInput():
         message = inputText.get()
+        messageArr = message.split()
         currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
-        if(message == "!quit"):
+        if(messageArr[0] == "!quit" and len(messageArr) == 1): # !quit
             sktToPeer.send(message.encode())
             outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
+        elif(messageArr[0] == "!send" and len(messageArr) == 2): # !send <File>
+            filename = f"./file/{messageArr[1]}"
+            sktToPeer.send(message.encode())
+            with open(filename, "rb") as file:
+                while True:
+                    byteRead = file.read(1024)
+                    if not byteRead:
+                        break
+                    sktToPeer.sendall(byteRead)
         else:
             outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
             sktToPeer.send(message.encode())
@@ -92,8 +122,9 @@ def talkToPeer(ip, root):
     
     while True:
         rmessage = sktToPeer.recv(1024).decode()
+        rmessageArr = rmessage.split()
         currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
-        if(rmessage == "!quit"):
+        if(rmessageArr[0] == "!quit"):
             sktToPeer.send(rmessage.encode())
             outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
             outputText.insert(END, "\n" + f"System: Chatbox will be closed after a few seconds")
@@ -101,7 +132,16 @@ def talkToPeer(ip, root):
             root.after(5000)
             sktToPeer.close()
             break
-        outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
+        elif(rmessageArr[1] == "!send"):
+            filename = rmessageArr[1]
+            with open(filename, "wb") as file:
+                while True:
+                    byteRead = sktToPeer.recv(1024)
+                    if not byteRead:    
+                        break
+                    file.write(byteRead)
+        else:
+            outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
         
     newWindow.destroy()
 
