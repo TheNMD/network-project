@@ -27,6 +27,7 @@ def listenToPeer(sktFunc, addrFunc, root):
         message = inputText.get()
         currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
         outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
+        sktFunc.send(message.encode())
         inputText.delete(0, END)
     
     newWindow = Toplevel(root)
@@ -54,6 +55,7 @@ def talkToPeer(ip, root):
         message = inputText.get()
         currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
         outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
+        sktToPeer.send(message.encode())
         inputText.delete(0, END)
 
     sktToPeer = socket.socket()
