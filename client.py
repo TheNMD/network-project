@@ -24,11 +24,10 @@ def acceptPeer(root):
 
 def listenToPeer(sktFunc, addrFunc, root):
     def messageInput():
-        outputText.insert(END, "\n" + f"Enter !q to stop chatting")
         message = inputText.get()
         if(message == "!quit"):
             sktFunc.send(message.encode())
-            root.after(1000)
+            root.after(2000)
             sktFunc.close()
         else:
             currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
@@ -45,6 +44,7 @@ def listenToPeer(sktFunc, addrFunc, root):
     inputText = Entry(newWindow, bg="#2C3E50", fg=TEXT_COLOR, font=FONT, width=55)
     inputText.grid(row=2, column=0)
     Button(newWindow, text="Send", font=FONT_BOLD, bg=BG_GRAY, command=messageInput).grid(row=2, column=1)
+    outputText.insert(END, "\n" + f"Enter !q to stop chatting")
     
     while True:
         rmessage = sktFunc.recv(1024).decode()
@@ -62,7 +62,7 @@ def talkToPeer(ip, root):
         message = inputText.get()
         if(message == "!quit"):
             sktToPeer.send(message.encode())
-            root.after(1000)
+            root.after(2000)
             sktToPeer.close()
         else:
             currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
@@ -86,6 +86,7 @@ def talkToPeer(ip, root):
     inputText = Entry(newWindow, bg="#2C3E50", fg=TEXT_COLOR, font=FONT, width=55)
     inputText.grid(row=2, column=0)
     Button(newWindow, text="Send", font=FONT_BOLD, bg=BG_GRAY, command=messageInput).grid(row=2, column=1)
+    outputText.insert(END, "\n" + f"Enter !q to stop chatting")
     
     while True:
         rmessage = sktToPeer.recv(1024).decode()
