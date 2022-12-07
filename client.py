@@ -51,10 +51,11 @@ def listenToPeer(sktFunc, addrFunc, root):
         currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
         if(rmessage == "!quit"):
             sktFunc.send(rmessage.encode())
+            outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
+            outputText.insert(END, "\n" + f"System: Chatbox will be closed after a few seconds")
+            print("\033[1;32m" + f"\n[{currentTime}] {addrFunc} disconnected" + "\033[1;37m")
             root.after(3000)
             sktFunc.close()
-            outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
-            print("\033[1;32m" + f"\n[{currentTime}] {addrFunc} disconnected" + "\033[1;37m")
             break
         outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
         
@@ -96,10 +97,11 @@ def talkToPeer(ip, root):
         currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
         if(rmessage == "!quit"):
             sktToPeer.send(rmessage.encode())
+            outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
+            outputText.insert(END, "\n" + f"System: Chatbox will be closed after a few seconds")
+            print("\033[1;32m" + f"\n[{currentTime}] {ip} disconnected" + "\033[1;37m")
             root.after(3000)
             sktToPeer.close()
-            outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
-            print("\033[1;32m" + f"\n[{currentTime}] {ip} disconnected" + "\033[1;37m")
             break
         outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
         
