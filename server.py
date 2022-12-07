@@ -224,7 +224,6 @@ def cmdInput():
 if __name__ == '__main__':
     sktList = set()
     sktServer = socket.socket()
-    
     sktServer.bind((IP, PORT))
     sktServer.listen()
     t = Thread(target=acceptClient, daemon=True)

@@ -23,6 +23,12 @@ def acceptPeer(root):
         t.start()
 
 def listenToPeer(sktFunc, addrFunc, root):
+    def messageInput():
+        message = inputText.get()
+        currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+        outputText.insert(END, "\n" + f"[{currentTime}] You: {message}".encode())
+        inputText.delete(0, END)
+    
     newWindow = Toplevel(root)
     newWindow.title("Chatbox")
     outputText = Text(newWindow, bg=BG_COLOR, fg=TEXT_COLOR, font=FONT, width=60)
@@ -44,6 +50,12 @@ def listenToPeer(sktFunc, addrFunc, root):
         outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
 
 def talkToPeer(ip, root):
+    def messageInput():
+        message = inputText.get()
+        currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+        outputText.insert(END, "\n" + f"[{currentTime}] You: {message}".encode())
+        inputText.delete(0, END)
+
     sktToPeer = socket.socket()
     
     try:
@@ -71,11 +83,6 @@ def talkToPeer(ip, root):
             break
         outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
 
-def messageInput():
-    message = inputText.get()
-    currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
-    outputText.insert(END, "\n" + f"[{currentTime}] You: {message}".encode())
-    inputText.delete(0, END)
 
 def cmdInstruction():
     toPrint = ("\n1.  Enter !logout to logout."   
