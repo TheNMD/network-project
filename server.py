@@ -220,18 +220,7 @@ def cmdInput():
         message = "Invalid command\n"
         outputText.insert(END, "\n" + message)
     inputText.delete(0, END)
-
-def get_geometry():
-    chatbox = Toplevel(root)
-    chatbox.title("Menu")
-    outputText = Text(chatbox, bg=BG_COLOR, fg=TEXT_COLOR, font=FONT, width=60)
-    outputText.grid(row=1, column=0, columnspan=2)
-    scrollbar = Scrollbar(outputText)
-    scrollbar.place(relheight=1, relx=0.974)
-    inputText = Entry(chatbox, bg="#2C3E50", fg=TEXT_COLOR, font=FONT, width=55)
-    inputText.grid(row=2, column=0)
-    Button(chatbox, text="Send", font=FONT_BOLD, bg=BG_GRAY, command=cmdInput).grid(row=2, column=1)
-
+    
 if __name__ == '__main__':
     sktList = set()
     sktServer = socket.socket()

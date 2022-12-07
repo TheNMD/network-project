@@ -14,39 +14,68 @@ TEXT_COLOR = "#EAECEE"
 FONT = "Helvetica 14"
 FONT_BOLD = "Helvetica 13 bold"
 
-def listenToPeer():
-    sktFromPeer, addrFromPeer = sktServer.accept()
-    currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
-    print("\033[1;32m" + f"\n[{currentTime}] *Received connection from {addrFromPeer[0]} : {addrFromPeer[1]}*" + "\033[1;37m")
+def acceptPeer(root):
+    while True:
+        sktFromPeer, addrFromPeer = sktServer.accept()
+        currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+        print("\033[1;32m" + f"\n[{currentTime}] *Received connection from {addrFromPeer[0]} : {addrFromPeer[1]}*" + "\033[1;37m")
+        t = Thread(target=listenToPeer, args=(sktFromPeer, addrFromPeer[0], root), daemon=True)
+        t.start()
+
+def listenToPeer(sktFunc, addrFunc, root):
+    newWindow = Toplevel(root)
+    newWindow.title("Chatbox")
+    outputText = Text(newWindow, bg=BG_COLOR, fg=TEXT_COLOR, font=FONT, width=60)
+    outputText.grid(row=1, column=0, columnspan=2)
+    scrollbar = Scrollbar(outputText)
+    scrollbar.place(relheight=1, relx=0.974)
+    inputText = Entry(newWindow, bg="#2C3E50", fg=TEXT_COLOR, font=FONT, width=55)
+    inputText.grid(row=2, column=0)
+    Button(newWindow, text="Send", font=FONT_BOLD, bg=BG_GRAY, command=messageInput).grid(row=2, column=1)
     
     while True:
-        rmessage = sktFromPeer.recv(1024).decode()
+        rmessage = sktFunc.recv(1024).decode()
         currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
         if(rmessage == "!quit"):
-            sktFromPeer.close()
-            print("\033[1;32m" + f"\n[{currentTime}] *{addrFromPeer[0]} disconnected*" + "\033[1;37m")
-            t = Thread(target=listenToPeer, daemon=True)
-            t.start()
+            sktFunc.close()
+            outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
+            print("\033[1;32m" + f"\n[{currentTime}] {addrFunc[0]} disconnected" + "\033[1;37m")
             break
-        print("\033[1;32m" + rmessage + "\033[1;37m")
+        outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
 
-# def talkToPeer(ip):
-#     sktToPeer = socket.socket()
+def talkToPeer(ip, root):
+    sktToPeer = socket.socket()
     
-#     try:
-#         sktToPeer.connect((ip, PORT))
-#     except Exception as e:
-#         print(e)
+    try:
+        sktToPeer.connect((ip, PORT))
+    except Exception as e:
+        print(e)
     
-#     while True:
-#         message = str(input())
-#         if(message == '!quit'):
-#             sktToPeer.send(message.encode())
-#             time.sleep(0.1)
-#             sktToPeer.close()
-#             break
-#         currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
-#         sktToPeer.send(f"[{currentTime}] {username} : {message}".encode()) 
+    newWindow = Toplevel(root)
+    newWindow.title("Chatbox")
+    outputText = Text(newWindow, bg=BG_COLOR, fg=TEXT_COLOR, font=FONT, width=60)
+    outputText.grid(row=1, column=0, columnspan=2)
+    scrollbar = Scrollbar(outputText)
+    scrollbar.place(relheight=1, relx=0.974)
+    inputText = Entry(newWindow, bg="#2C3E50", fg=TEXT_COLOR, font=FONT, width=55)
+    inputText.grid(row=2, column=0)
+    Button(newWindow, text="Send", font=FONT_BOLD, bg=BG_GRAY, command=messageInput).grid(row=2, column=1)
+    
+    while True:
+        rmessage = sktToPeer.recv(1024).decode()
+        currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+        if(rmessage == "!quit"):
+            sktToPeer.close()
+            outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
+            print("\033[1;32m" + f"\n[{currentTime}] {ip} disconnected" + "\033[1;37m")
+            break
+        outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
+
+def messageInput():
+    message = inputText.get()
+    currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+    outputText.insert(END, "\n" + f"[{currentTime}] You: {message}".encode())
+    inputText.delete(0, END)
 
 def cmdInstruction():
     toPrint = ("\n1.  Enter !logout to logout."   
@@ -76,10 +105,12 @@ def cmdInput():
         message = sktToServer.recv(1024).decode()
         if(message == "!connectOK"):
             message = sktToServer.recv(1024).decode()
-            print(message)
+            t = Thread(target=talkToPeer, args=(ip, root), daemon=True)
+            t.start()
         else:
             outputText.insert(END, "\n" + message)  
     inputText.delete(0, END)
+
 
 if __name__ == '__main__':
     sktList = set()
@@ -98,11 +129,6 @@ if __name__ == '__main__':
     except Exception as e:
         print(e)
 
-    sktServer.bind((IP, PORT))
-    sktServer.listen()
-    t = Thread(target=listenToPeer, daemon=True)
-    t.start()
-
     root = Tk()
     root.title("Menu")
     outputText = Text(root, bg=BG_COLOR, fg=TEXT_COLOR, font=FONT, width=60)
@@ -114,6 +140,11 @@ if __name__ == '__main__':
     Button(root, text="Send", font=FONT_BOLD, bg=BG_GRAY, command=cmdInput).grid(row=2, column=1)
     outputText.insert(END, "\n" + f"{HOST} : {IP} : {PORT}")
     outputText.insert(END, "\n" + cmdInstruction())
+    
+    sktServer.bind((IP, PORT))
+    sktServer.listen()
+    t = Thread(target=acceptPeer, args=(root,), daemon=True)
+    t.start()
     
     root.mainloop()
 
