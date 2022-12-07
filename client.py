@@ -25,12 +25,11 @@ def acceptPeer(root):
 def listenToPeer(sktFunc, addrFunc, root):
     def messageInput():
         message = inputText.get()
+        currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
         if(message == "!quit"):
             sktFunc.send(message.encode())
-            root.after(2000)
-            sktFunc.close()
+            outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
         else:
-            currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
             outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
             sktFunc.send(message.encode())
             inputText.delete(0, END)
@@ -50,6 +49,8 @@ def listenToPeer(sktFunc, addrFunc, root):
         rmessage = sktFunc.recv(1024).decode()
         currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
         if(rmessage == "!quit"):
+            sktFunc.send(rmessage.encode())
+            root.after(1000)
             sktFunc.close()
             outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
             print("\033[1;32m" + f"\n[{currentTime}] {addrFunc[0]} disconnected" + "\033[1;37m")
@@ -59,12 +60,11 @@ def listenToPeer(sktFunc, addrFunc, root):
 def talkToPeer(ip, root):
     def messageInput():
         message = inputText.get()
+        currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
         if(message == "!quit"):
             sktToPeer.send(message.encode())
-            root.after(2000)
-            sktToPeer.close()
+            outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
         else:
-            currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
             outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
             sktToPeer.send(message.encode())
             inputText.delete(0, END)
@@ -91,6 +91,8 @@ def talkToPeer(ip, root):
         rmessage = sktToPeer.recv(1024).decode()
         currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
         if(rmessage == "!quit"):
+            sktToPeer.send(rmessage.encode())
+            root.after(1000)
             sktToPeer.close()
             outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
             print("\033[1;32m" + f"\n[{currentTime}] {ip} disconnected" + "\033[1;37m")
