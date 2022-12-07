@@ -41,6 +41,7 @@ def listenToPeer(sktFunc, addrFunc, root):
                     byteRead = file.read(1024)
                     sktFunc.send(byteRead)
                     totalRead += len(byteRead)
+                outputText.insert(END, "\n" + f"[{currentTime}] System: File sent successfully") 
         else:
             outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
             sktFunc.send(message.encode())
@@ -78,6 +79,7 @@ def listenToPeer(sktFunc, addrFunc, root):
                     byteWrite = sktFunc.recv(1024)
                     file.write(byteWrite)
                     totalWrite += len(byteWrite)
+                outputText.insert(END, "\n" + f"[{currentTime}] System: New file received") 
         else:
             outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
         
@@ -103,6 +105,7 @@ def talkToPeer(ip, root):
                     byteRead = file.read(1024)
                     sktToPeer.send(byteRead)
                     totalRead += len(byteRead)
+                outputText.insert(END, "\n" + f"[{currentTime}] System: File sent successfully") 
             inputText.delete(0, END)
         else:
             outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
@@ -148,6 +151,7 @@ def talkToPeer(ip, root):
                     byteWrite = sktToPeer.recv(1024)
                     file.write(byteWrite)
                     totalWrite += len(byteWrite)
+                outputText.insert(END, "\n" + f"[{currentTime}] System: New file received")
         else:
             outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
         
