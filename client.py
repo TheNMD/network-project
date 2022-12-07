@@ -37,6 +37,7 @@ def listenToPeer(sktFunc, addrFunc, root):
                 while True:
                     byteRead = file.read(1024)
                     if not byteRead:
+                        print("Done") 
                         break
                     sktFunc.sendall(byteRead)
         else:
@@ -72,7 +73,8 @@ def listenToPeer(sktFunc, addrFunc, root):
             with open(filename, "wb") as file:
                 while True:
                     byteRead = sktFunc.recv(1024)
-                    if not byteRead:    
+                    if not byteRead:
+                        print("stopping")    
                         break
                     file.write(byteRead)
         else:
@@ -96,6 +98,7 @@ def talkToPeer(ip, root):
                 while True:
                     byteRead = file.read(1024)
                     if not byteRead:
+                        print("Done")  
                         break
                     sktToPeer.sendall(byteRead)
             inputText.delete(0, END)
@@ -139,7 +142,8 @@ def talkToPeer(ip, root):
             with open(filename, "wb") as file:
                 while True:
                     byteRead = sktToPeer.recv(1024)
-                    if not byteRead:    
+                    if not byteRead:
+                        print("Stopping")     
                         break
                     file.write(byteRead)
         else:
