@@ -24,11 +24,17 @@ def acceptPeer(root):
 
 def listenToPeer(sktFunc, addrFunc, root):
     def messageInput():
+        outputText.insert(END, "\n" + f"Enter !q to stop chatting")
         message = inputText.get()
-        currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
-        outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
-        sktFunc.send(message.encode())
-        inputText.delete(0, END)
+        if(message == "!quit"):
+            sktFunc.send(message.encode())
+            root.after(1000)
+            sktFunc.close()
+        else:
+            currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+            outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
+            sktFunc.send(message.encode())
+            inputText.delete(0, END)
     
     newWindow = Toplevel(root)
     newWindow.title("Chatbox")
@@ -52,11 +58,17 @@ def listenToPeer(sktFunc, addrFunc, root):
 
 def talkToPeer(ip, root):
     def messageInput():
+        outputText.insert(END, "\n" + f"Enter !q to stop chatting")
         message = inputText.get()
-        currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
-        outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
-        sktToPeer.send(message.encode())
-        inputText.delete(0, END)
+        if(message == "!quit"):
+            sktToPeer.send(message.encode())
+            root.after(1000)
+            sktToPeer.close()
+        else:
+            currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+            outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
+            sktToPeer.send(message.encode())
+            inputText.delete(0, END)
 
     sktToPeer = socket.socket()
     
