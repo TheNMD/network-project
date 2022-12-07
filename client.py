@@ -28,7 +28,7 @@ def listenToPeer(sktFunc, addrFunc, root):
         message = inputText.get()
         messageArr = message.split()
         currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
-        if(messageArr[0] == "!quit" and len(messageArr) == 1): # !quit
+        if(messageArr[0] == "!quit" and len(messageArr) == 1): # !quit 
             sktFunc.send(message.encode())
             outputText.insert(END, "\n" + f"[{currentTime}] You: {message}") 
         elif(messageArr[0] == "!send" and len(messageArr) == 2): # !send <File>
@@ -113,7 +113,7 @@ def talkToPeer(ip, root):
             sktToPeer.send(message.encode())
             inputText.delete(0, END)
 
-    sktToPeer = socket.socket()
+    sktToPeer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     
     try:
         sktToPeer.connect((ip, PORT))
@@ -198,7 +198,7 @@ def cmdInput():
 
 if __name__ == '__main__':
     sktList = set()
-    sktServer, sktToServer = socket.socket(), socket.socket()
+    sktServer, sktToServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM), socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # try:
     #     sktToServer.connect((SERVER_IP, SPORT))
