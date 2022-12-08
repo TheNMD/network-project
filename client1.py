@@ -7,7 +7,7 @@ HOST = socket.gethostname()
 IP = socket.gethostbyname(HOST)
 PORT = 5004
 SPORT = 5002
-SIP = "10.128.97.64"
+SIP = IP
 
 BG_GRAY = "#ABB2B9"
 BG_COLOR = "#17202A"

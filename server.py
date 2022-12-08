@@ -57,8 +57,8 @@ def listenToClient(sktFunc, addrFunc):
                 else:
                     message = "!connectOK"
                     sktFunc.send(message.encode())
-                    message = ip
-                    sktFunc.send(message.encode())
+                    toSend = f"{username} {ip} {port}"
+                    sktFunc.send(toSend.encode())
         elif(rcommandArr[0] == "!info" and len(rcommandArr) == 2): # !info <Username>
             (username, password, ip, port, online, friend) = cmdSearch(rcommandArr[1], "!NA")
             message = f"Username: {username}\nPassword: {password}\nIP: {ip}\nOnline: {online}\nFriend: {friend}\n"

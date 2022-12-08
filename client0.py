@@ -7,7 +7,7 @@ HOST = socket.gethostname()
 IP = socket.gethostbyname(HOST)
 PORT = 5003
 SPORT = 5002
-SIP = "10.128.97.64"
+SIP = IP
 
 BG_GRAY = "#ABB2B9"
 BG_COLOR = "#17202A"
@@ -86,7 +86,7 @@ def listenToPeer(sktFunc, addrFunc, root):
         
     newWindow.destroy()
 
-def talkToPeer(ip, root):
+def talkToPeer(name, ip, port, root):
     def messageInput():
         message = inputText.get()
         messageArr = message.split()
@@ -186,8 +186,12 @@ def cmdInput():
         sktToServer.send(command.encode())
         message = sktToServer.recv(1024).decode()
         if(message == "!connectOK"):
-            ip = sktToServer.recv(1024).decode()
-            t = Thread(target=talkToPeer, args=(ip, root), daemon=True)
+            toReceive = sktToServer.recv(1024).decode()
+            toReceiveArr = toReceive.split()
+            fusername = toReceiveArr[0]
+            fip = toReceiveArr[1]
+            fport = toReceiveArr[2]
+            t = Thread(target=talkToPeer, args=(fusername, fip, fport, root), daemon=True)
             t.start()
         else:
             outputText.insert(END, "\n" + message)  
