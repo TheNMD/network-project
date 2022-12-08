@@ -5,5 +5,5 @@ s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
 while True:
     data = 'test'.encode()
-    s.sendto(data, ('255.255.255.255', 1080))
+    s.sendto(data, ('255.255.255.255', 5002))
     time.sleep(1)
