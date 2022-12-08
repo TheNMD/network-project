@@ -5,9 +5,9 @@ from datetime import datetime
 
 HOST = socket.gethostname()
 IP = socket.gethostbyname(HOST)
+PORT = 5004
 SPORT = 5002
-PORT = 5002
-SERVER_IP = "192.168.1.10"
+SIP = "10.128.97.64"
 
 BG_GRAY = "#ABB2B9"
 BG_COLOR = "#17202A"
@@ -116,7 +116,7 @@ def talkToPeer(ip, root):
     sktToPeer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     
     try:
-        sktToPeer.connect((ip, PORT))
+        sktToPeer.connect((ip, 5003))
     except Exception as e:
         print(e)
     
@@ -182,13 +182,11 @@ def cmdInput():
         root.after(1000)
         sktToServer.close()
     else:
-        # command += f" {username}"
-        # sktToServer.send(command.encode())
-        # message = sktToServer.recv(1024).decode()
-        message = "!connectOK"
+        command += f" {username}"
+        sktToServer.send(command.encode())
+        message = sktToServer.recv(1024).decode()
         if(message == "!connectOK"):
-            # ip = sktToServer.recv(1024).decode()
-            ip = "192.168.1.10"
+            ip = sktToServer.recv(1024).decode()
             t = Thread(target=talkToPeer, args=(ip, root), daemon=True)
             t.start()
         else:
@@ -200,21 +198,21 @@ if __name__ == '__main__':
     sktList = set()
     sktServer, sktToServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM), socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    # try:
-    #     sktToServer.connect((SERVER_IP, SPORT))
-    #     while True:
-    #         username = input("Username: ")
-    #         password = input("Password: ")
-    #         sktToServer.send(f"!login {username} {password}".encode())
-    #         result = sktToServer.recv(1024).decode()
-    #         if(result == "!loginOK"):
-    #             break
-    #         print(result)
-    # except Exception as e:
-    #     print(e)
+    try:
+        sktToServer.connect((SIP, SPORT))
+        while True:
+            username = input("Username: ")
+            password = input("Password: ")
+            sktToServer.send(f"!login {username} {password}".encode())
+            result = sktToServer.recv(1024).decode()
+            if(result == "!loginOK"):
+                break
+            print(result)
+    except Exception as e:
+        print(e)
 
     root = Tk()
-    root.title("Menu")
+    root.title(f"{username} - Menu")
     outputText = Text(root, bg=BG_COLOR, fg=TEXT_COLOR, font=FONT, width=60)
     outputText.grid(row=1, column=0, columnspan=2)
     scrollbar = Scrollbar(outputText)
