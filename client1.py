@@ -43,7 +43,10 @@ def listenToPeer(sktFunc, addrFunc, fname, root):
                     byteRead = file.read(1024)
                     sktFunc.send(byteRead)
                     totalRead += len(byteRead)
-                outputText.insert(END, "\n" + f"[{currentTime}] System: File sent successfully") 
+                outputText.insert(END, "\n" + f"[{currentTime}] System: File sent successfully")
+        elif(messageArr[0] == "!help" and len(messageArr) == 1):
+             outputText.insert(END, "\n" + chatInstruction())
+             inputText.delete(0, END)
         else:
             outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
             sktFunc.send(message.encode())
@@ -58,7 +61,7 @@ def listenToPeer(sktFunc, addrFunc, fname, root):
     inputText = Entry(newWindow, bg="#2C3E50", fg=TEXT_COLOR, font=FONT, width=55)
     inputText.grid(row=2, column=0)
     Button(newWindow, text="Send", font=FONT_BOLD, bg=BG_GRAY, command=messageInput).grid(row=2, column=1)
-    outputText.insert(END, "\n" + f"Enter !quit to stop chatting")
+    outputText.insert(END, "\n" + chatInstruction())
     
     while True:
         rmessage = sktFunc.recv(1024).decode()
@@ -109,6 +112,9 @@ def talkToPeer(fname, fip, fport, root):
                     totalRead += len(byteRead)
                 outputText.insert(END, "\n" + f"[{currentTime}] System: File sent successfully") 
             inputText.delete(0, END)
+        elif(messageArr[0] == "!help" and len(messageArr) == 1):
+            outputText.insert(END, "\n" + chatInstruction())
+            inputText.delete(0, END)
         else:
             outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
             sktToPeer.send(message.encode())
@@ -132,7 +138,7 @@ def talkToPeer(fname, fip, fport, root):
     inputText = Entry(newWindow, bg="#2C3E50", fg=TEXT_COLOR, font=FONT, width=55)
     inputText.grid(row=2, column=0)
     Button(newWindow, text="Send", font=FONT_BOLD, bg=BG_GRAY, command=messageInput).grid(row=2, column=1)
-    outputText.insert(END, "\n" + f"Enter !quit to stop chatting")
+    outputText.insert(END, "\n" + chatInstruction())
     
     while True:
         rmessage = sktToPeer.recv(1024).decode()
@@ -161,6 +167,11 @@ def talkToPeer(fname, fip, fport, root):
         
     newWindow.destroy()
 
+def chatInstruction():
+    toPrint = ("\n1.  Enter !quit to stop chatting."   
+             + "\n2.  Enter !send <File path> to connect to a friend."
+             + "\n3.  Enter !help to see instructions.\n")
+    return toPrint
 
 def cmdInstruction():
     toPrint = ("\n1.  Enter !logout to logout."   
