@@ -61,7 +61,7 @@ def listenToClient(sktFunc, addrFunc):
                     sktFunc.send(toSend.encode())
         elif(rcommandArr[0] == "!info" and len(rcommandArr) == 2): # !info <Username>
             (username, password, ip, port, online, friend) = cmdSearch(rcommandArr[1], "!NA")
-            message = f"Username: {username}\nPassword: {password}\nIP: {ip}\nOnline: {online}\nFriend: {friend}\n"
+            message = f"Username: {username}\nPassword: {password}\nIP: {ip}\nPort: {port}\nOnline: {online}\nFriend: {friend}\n"
             sktFunc.send(message.encode())
         elif(rcommandArr[0] == "!change_p" and len(rcommandArr) == 3): # !change_p <Password> <Username>
             (username, password, ip, port, online, friend) = cmdSearch(rcommandArr[2], "!NA")
@@ -95,7 +95,7 @@ def listenToClient(sktFunc, addrFunc):
                     message = f"User {fusername} added to the friend list\n"
                     sktFunc.send(message.encode())
         elif(rcommandArr[0] == "!remove" and len(rcommandArr) == 3): # !remove <Friend username> <Username>
-            (fusername, fpassword, fip, fonline, ffriend) = cmdSearch(rcommandArr[1], "!NA")
+            (fusername, fpassword, fip, fport, fonline, ffriend) = cmdSearch(rcommandArr[1], "!NA")
             if(fusername == -1):
                 message = f"User {rcommandArr[1]} not found\n"
                 sktFunc.send(message.encode())
@@ -160,7 +160,7 @@ def cmdUpdate(username, password, ip, port, online, friend):
         if(username == userList["userList"][idx]["username"]):
             userList["userList"][idx]["password"] = password
             userList["userList"][idx]["ip"] = ip
-            userList["userList"][idx]["ip"] = port 
+            userList["userList"][idx]["port"] = port 
             userList["userList"][idx]["online"] = online
             userList["userList"][idx]["friend"] = friend
     file.close()

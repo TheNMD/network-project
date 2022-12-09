@@ -18,12 +18,13 @@ FONT_BOLD = "Helvetica 13 bold"
 def acceptPeer(root):
     while True:
         sktFromPeer, addrFromPeer = sktServer.accept()
+        fname = sktFromPeer.recv(1024).decode()
         currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
         print("\033[1;32m" + f"\n[{currentTime}] *Received connection from {addrFromPeer[0]} : {addrFromPeer[1]}*" + "\033[1;37m")
-        t = Thread(target=listenToPeer, args=(sktFromPeer, addrFromPeer[0], root), daemon=True)
+        t = Thread(target=listenToPeer, args=(sktFromPeer, addrFromPeer[0], fname, root), daemon=True)
         t.start()
 
-def listenToPeer(sktFunc, addrFunc, root):
+def listenToPeer(sktFunc, addrFunc, fname, root):
     def messageInput():
         message = inputText.get()
         messageArr = message.split()
@@ -32,7 +33,7 @@ def listenToPeer(sktFunc, addrFunc, root):
             sktFunc.send(message.encode())
             outputText.insert(END, "\n" + f"[{currentTime}] You: {message}") 
         elif(messageArr[0] == "!send" and len(messageArr) == 2): # !send <File>
-            filename = f"./file/{messageArr[1]}"
+            filename = f"./{username}/{messageArr[1]}"
             filesize = os.path.getsize(filename)
             totalRead = 0
             message += f" {filesize}"
@@ -49,7 +50,7 @@ def listenToPeer(sktFunc, addrFunc, root):
             inputText.delete(0, END)
     
     newWindow = Toplevel(root)
-    newWindow.title("Chatbox")
+    newWindow.title(f"{fname}")
     outputText = Text(newWindow, bg=BG_COLOR, fg=TEXT_COLOR, font=FONT, width=60)
     outputText.grid(row=1, column=0, columnspan=2)
     scrollbar = Scrollbar(outputText)
@@ -65,14 +66,14 @@ def listenToPeer(sktFunc, addrFunc, root):
         currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
         if(rmessageArr[0] == "!quit"): # !quit
             sktFunc.send(rmessage.encode())
-            outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
+            outputText.insert(END, "\n" + f"[{currentTime}] {fname}: {rmessage}")
             outputText.insert(END, "\n" + f"System: Chatbox will be closed after a few seconds")
             print("\033[1;32m" + f"\n[{currentTime}] {addrFunc} disconnected" + "\033[1;37m")
             root.after(5000)
             sktFunc.close()
             break
         elif(rmessageArr[0] == "!send"): # !send <File> <Size>
-            filename = f"./file/{rmessageArr[1]}"
+            filename = f"./{username}/{rmessageArr[1]}"
             filesize = int(rmessageArr[2])
             totalWrite = 0
             with open(filename, "wb") as file:
@@ -82,11 +83,11 @@ def listenToPeer(sktFunc, addrFunc, root):
                     totalWrite += len(byteWrite)
                 outputText.insert(END, "\n" + f"[{currentTime}] System: New file received") 
         else:
-            outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
+            outputText.insert(END, "\n" + f"[{currentTime}] {fname}: {rmessage}")
         
     newWindow.destroy()
 
-def talkToPeer(ip, root):
+def talkToPeer(fname, fip, fport, root):
     def messageInput():
         message = inputText.get()
         messageArr = message.split()
@@ -96,7 +97,7 @@ def talkToPeer(ip, root):
             outputText.insert(END, "\n" + f"[{currentTime}] You: {message}")
             inputText.delete(0, END)
         elif(messageArr[0] == "!send" and len(messageArr) == 2): # !send <File>
-            filename = f"./file/{messageArr[1]}"
+            filename = f"./{username}/{messageArr[1]}"
             filesize = os.path.getsize(filename)
             totalRead = 0
             message += f" {filesize}"
@@ -113,15 +114,17 @@ def talkToPeer(ip, root):
             sktToPeer.send(message.encode())
             inputText.delete(0, END)
 
-    sktToPeer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sktToPeer = socket.socket()
     
     try:
-        sktToPeer.connect((ip, 5003))
+        sktToPeer.connect((fip, fport))
+        root.after(1000)
+        sktToPeer.send(username.encode())
     except Exception as e:
         print(e)
     
     newWindow = Toplevel(root)
-    newWindow.title("Chatbox")
+    newWindow.title(f"{fname}")
     outputText = Text(newWindow, bg=BG_COLOR, fg=TEXT_COLOR, font=FONT, width=60)
     outputText.grid(row=1, column=0, columnspan=2)
     scrollbar = Scrollbar(outputText)
@@ -137,14 +140,14 @@ def talkToPeer(ip, root):
         currentTime = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
         if(rmessageArr[0] == "!quit"): # !quit
             sktToPeer.send(rmessage.encode())
-            outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
+            outputText.insert(END, "\n" + f"[{currentTime}] {fname}: {rmessage}")
             outputText.insert(END, "\n" + f"System: Chatbox will be closed after a few seconds")
-            print("\033[1;32m" + f"\n[{currentTime}] {ip} disconnected" + "\033[1;37m")
+            print("\033[1;32m" + f"\n[{currentTime}] {fip} disconnected" + "\033[1;37m")
             root.after(5000)
             sktToPeer.close()
             break
         elif(rmessageArr[0] == "!send"): # !send <File> <Size>
-            filename = f"./file/{rmessageArr[1]}"
+            filename = f"./{username}/{rmessageArr[1]}"
             filesize = int(rmessageArr[2])
             totalWrite = 0
             with open(filename, "wb") as file:
@@ -154,7 +157,7 @@ def talkToPeer(ip, root):
                     totalWrite += len(byteWrite)
                 outputText.insert(END, "\n" + f"[{currentTime}] System: New file received")
         else:
-            outputText.insert(END, "\n" + f"[{currentTime}] Friend: {rmessage}")
+            outputText.insert(END, "\n" + f"[{currentTime}] {fname}: {rmessage}")
         
     newWindow.destroy()
 
@@ -186,8 +189,12 @@ def cmdInput():
         sktToServer.send(command.encode())
         message = sktToServer.recv(1024).decode()
         if(message == "!connectOK"):
-            ip = sktToServer.recv(1024).decode()
-            t = Thread(target=talkToPeer, args=(ip, root), daemon=True)
+            toReceive = sktToServer.recv(1024).decode()
+            toReceiveArr = toReceive.split()
+            fname = toReceiveArr[0]
+            fip = toReceiveArr[1]
+            fport = int(toReceiveArr[2])
+            t = Thread(target=talkToPeer, args=(fname, fip, fport, root), daemon=True)
             t.start()
         else:
             outputText.insert(END, "\n" + message)  
@@ -196,14 +203,14 @@ def cmdInput():
 
 if __name__ == '__main__':
     sktList = set()
-    sktServer, sktToServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM), socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sktServer, sktToServer = socket.socket(), socket.socket()
 
     try:
         sktToServer.connect((SIP, SPORT))
         while True:
             username = input("Username: ")
             password = input("Password: ")
-            sktToServer.send(f"!login {username} {password}".encode())
+            sktToServer.send(f"!login {username} {password} {PORT}".encode())
             result = sktToServer.recv(1024).decode()
             if(result == "!loginOK"):
                 break
