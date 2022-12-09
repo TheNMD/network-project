@@ -44,6 +44,7 @@ def listenToPeer(sktFunc, addrFunc, fname, root):
                     sktFunc.send(byteRead)
                     totalRead += len(byteRead)
                 outputText.insert(END, "\n" + f"[{currentTime}] System: File sent successfully")
+            inputText.delete(0, END)
         elif(messageArr[0] == "!help" and len(messageArr) == 1):
              outputText.insert(END, "\n" + chatInstruction())
              inputText.delete(0, END)

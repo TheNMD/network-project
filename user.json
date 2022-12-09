@@ -2,11 +2,11 @@
     "userList": [
         {
             "username": "UserA",
-            "password": "adadad",
+            "password": "newerpassword",
             "ip": "192.168.1.10",
             "port": "5003",
-            "online": 0,
-            "friend": "UserA:UserM:UserB"
+            "online": 1,
+            "friend": "UserA:UserB:UserH"
         },
         {
             "username": "UserB",
@@ -23,6 +23,14 @@
             "port": "5005",
             "online": 0,
             "friend": "UserH:UserB:UserM"
+        },
+        {
+            "username": "UserM",
+            "password": "asdwex",
+            "ip": "0.0.0.0",
+            "port": 0,
+            "online": 0,
+            "friend": "UserM"
         }
     ]
 }
