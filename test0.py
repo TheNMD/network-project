@@ -5,9 +5,11 @@ from datetime import datetime
 
 HOST = socket.gethostname()
 IP = socket.gethostbyname(HOST)
-PORT = 5004
+PORT = 5003
 SPORT = 5002
 SIP = IP
+
+username = "UserA"
 
 BG_GRAY = "#ABB2B9"
 BG_COLOR = "#17202A"
@@ -198,15 +200,16 @@ def cmdInput():
         sktToServer.close()
         root.destroy()
     else:
-        command += f" {username}"
-        sktToServer.send(command.encode())
-        message = sktToServer.recv(1024).decode()
+        # command += f" {username}"
+        # sktToServer.send(command.encode())
+        # message = sktToServer.recv(1024).decode()
+        message = "!connectOK"
         if(message == "!connectOK"):
-            toReceive = sktToServer.recv(1024).decode()
-            toReceiveArr = toReceive.split()
-            fname = toReceiveArr[0]
-            fip = toReceiveArr[1]
-            fport = int(toReceiveArr[2])
+            # toReceive = sktToServer.recv(1024).decode()
+            # toReceiveArr = toReceive.split()
+            fname = "UserB"
+            fip = IP
+            fport = 5003
             t = Thread(target=talkToPeer, args=(fname, fip, fport, root), daemon=True)
             t.start()
         else:
@@ -218,18 +221,18 @@ if __name__ == '__main__':
     sktList = set()
     sktServer, sktToServer = socket.socket(), socket.socket()
 
-    try:
-        sktToServer.connect((SIP, SPORT))
-        while True:
-            username = input("Username: ")
-            password = input("Password: ")
-            sktToServer.send(f"!login {username} {password} {PORT}".encode())
-            result = sktToServer.recv(1024).decode()
-            if(result == "!loginOK"):
-                break
-            print(result)
-    except Exception as e:
-        print(e)
+    # try:
+    #     sktToServer.connect((SIP, SPORT))
+    #     while True:
+    #         username = input("Username: ")
+    #         password = input("Password: ")
+    #         sktToServer.send(f"!login {username} {password} {PORT}".encode())
+    #         result = sktToServer.recv(1024).decode()
+    #         if(result == "!loginOK"):
+    #             break
+    #         print(result)
+    # except Exception as e:
+    #     print(e)
 
     root = Tk()
     root.title(f"{username} - Menu")
