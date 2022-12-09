@@ -5,7 +5,7 @@ from datetime import datetime
 
 HOST = socket.gethostname()
 IP = socket.gethostbyname(HOST)
-PORT = 5004
+PORT = 5005
 SPORT = 5002
 SIP = IP
 

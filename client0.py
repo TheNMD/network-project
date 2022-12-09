@@ -1,4 +1,4 @@
-import socket, os
+import os, socket
 from tkinter import *
 from threading import Thread
 from datetime import datetime
@@ -179,11 +179,13 @@ def cmdInput():
     if(command == "!help"):
         message = cmdInstruction()
         outputText.insert(END, "\n" + message)
+        inputText.delete(0, END)
     elif(command == "!logout"):
         command += f" {username}"
         sktToServer.send(command.encode())
         root.after(1000)
         sktToServer.close()
+        root.destroy()
     else:
         command += f" {username}"
         sktToServer.send(command.encode())
@@ -198,7 +200,7 @@ def cmdInput():
             t.start()
         else:
             outputText.insert(END, "\n" + message)  
-    inputText.delete(0, END)
+        inputText.delete(0, END)
 
 
 if __name__ == '__main__':

@@ -1,4 +1,4 @@
-import socket, json
+import os, socket, json
 from tkinter import *
 from threading import Thread
 from datetime import datetime
@@ -31,6 +31,9 @@ def listenToClient(sktFunc, addrFunc):
             if(username == -1):
                 message = "Login failed\n"
                 sktFunc.send(message.encode())
+            elif(online == 1):
+                message = "Already logged in\n"
+                sktFunc.send(message.encode())
             else:
                 ip = addrFunc
                 online = 1
@@ -43,7 +46,7 @@ def listenToClient(sktFunc, addrFunc):
             (username, password, ip, port, online, friend) = cmdSearch(rcommandArr[1], "!NA")
             online = 0
             cmdUpdate(username, password, ip, port, online, friend)
-            print(f"{addrFunc} disconnected\n")
+            print(f"\n{addrFunc} disconnected")
             break
         elif(rcommandArr[0] == "!connect" and len(rcommandArr) == 3): # !connect <Friend username> <Username>            
             (username, password, ip, port, online, friend) = cmdSearch(rcommandArr[1], "!NA")
@@ -196,6 +199,9 @@ def cmdInput():
                 userList["userList"].append(newUser)
                 file.seek(0)
                 json.dump(userList, file, indent = 4)
+            os.makedirs(f"./{commandArr[1]}")
+            with open(f"./{commandArr[1]}/Welcome.txt", "w") as file:
+                file.write(f"Welcome to the server {commandArr[1]}")
             message = f"User {commandArr[1]} added successfully\n"
             outputText.insert(END, "\n" + message)
         else:
@@ -212,6 +218,7 @@ def cmdInput():
             for idx in range(len(userList["userList"])):
                 if(username == userList["userList"][idx]["username"]):
                     del userList["userList"][idx]
+                    break
             file.close()
             with open("./user.json", "w+") as file:
                 json.dump(userList, file, indent = 4)

@@ -5,7 +5,7 @@
             "password": "123456",
             "ip": "192.168.1.10",
             "port": "5003",
-            "online": 1,
+            "online": 0,
             "friend": "UserA:UserM"
         },
         {
@@ -13,32 +13,16 @@
             "password": "abcdef",
             "ip": "192.168.1.10",
             "port": "5004",
-            "online": 1,
+            "online": 0,
             "friend": "UserB:UserA:UserH"
         },
         {
             "username": "UserH",
-            "password": "a12b34c56",
-            "ip": "192.168.1.5",
-            "port": 0,
+            "password": "111222",
+            "ip": "192.168.1.10",
+            "port": "5005",
             "online": 0,
             "friend": "UserH:UserB:UserM"
-        },
-        {
-            "username": "UserM",
-            "password": "779abd",
-            "ip": "250.137.96.91",
-            "port": 0,
-            "online": 0,
-            "friend": "UserM:UserO:UserA"
-        },
-        {
-            "username": "UserO",
-            "password": "abcdef",
-            "ip": "147.215.106.120",
-            "port": 0,
-            "online": 0,
-            "friend": "UserO:UserM"
         }
     ]
 }
