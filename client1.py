@@ -5,7 +5,7 @@ from datetime import datetime
 
 HOST = socket.gethostname()
 IP = socket.gethostbyname(HOST)
-PORT = 5004
+PORT = 5003
 SPORT = 5002
 SIP = IP
 
@@ -240,7 +240,7 @@ if __name__ == '__main__':
     inputText = Entry(root, bg="#2C3E50", fg=TEXT_COLOR, font=FONT, width=55)
     inputText.grid(row=2, column=0)
     Button(root, text="Send", font=FONT_BOLD, bg=BG_GRAY, command=cmdInput).grid(row=2, column=1)
-    outputText.insert(END, "\n" + f"{HOST} : {IP} : {PORT}")
+    outputText.insert(END, "\n" + f"{HOST}")
     outputText.insert(END, "\n" + cmdInstruction())
     
     sktServer.bind((IP, PORT))
