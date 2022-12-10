@@ -9,8 +9,6 @@ PORT = 5004
 SPORT = 5002
 SIP = IP
 
-username = "UserB"
-
 BG_GRAY = "#ABB2B9"
 BG_COLOR = "#17202A"
 TEXT_COLOR = "#EAECEE"
@@ -46,6 +44,7 @@ def listenToPeer(sktFunc, addrFunc, fname, root):
                     sktFunc.send(byteRead)
                     totalRead += len(byteRead)
                 outputText.insert(END, "\n" + f"[{currentTime}] System: File sent successfully")
+            inputText.delete(0, END)
         elif(messageArr[0] == "!help" and len(messageArr) == 1):
              outputText.insert(END, "\n" + chatInstruction())
              inputText.delete(0, END)
@@ -200,16 +199,16 @@ def cmdInput():
         sktToServer.close()
         root.destroy()
     else:
-        # command += f" {username}"
+        command += f" {username}"
         # sktToServer.send(command.encode())
         # message = sktToServer.recv(1024).decode()
         message = "!connectOK"
         if(message == "!connectOK"):
-            # toReceive = sktToServer.recv(1024).decode()
-            # toReceiveArr = toReceive.split()
-            fname = "UserA"
-            fip = IP
-            fport = 5004
+            toReceive = f"UserA {IP} 5003"
+            toReceiveArr = toReceive.split()
+            fname = toReceiveArr[0]
+            fip = toReceiveArr[1]
+            fport = int(toReceiveArr[2])
             t = Thread(target=talkToPeer, args=(fname, fip, fport, root), daemon=True)
             t.start()
         else:
@@ -221,18 +220,19 @@ if __name__ == '__main__':
     sktList = set()
     sktServer, sktToServer = socket.socket(), socket.socket()
 
-    # try:
-    #     sktToServer.connect((SIP, SPORT))
-    #     while True:
-    #         username = input("Username: ")
-    #         password = input("Password: ")
-    #         sktToServer.send(f"!login {username} {password} {PORT}".encode())
-    #         result = sktToServer.recv(1024).decode()
-    #         if(result == "!loginOK"):
-    #             break
-    #         print(result)
-    # except Exception as e:
-    #     print(e)
+    try:
+        # sktToServer.connect((SIP, SPORT))
+        while True:
+            username = input("Username: ")
+            password = input("Password: ")
+            # sktToServer.send(f"!login {username} {password} {PORT}".encode())
+            # result = sktToServer.recv(1024).decode()
+            # if(result == "!loginOK"):
+            #     break
+            # print(result)
+            break
+    except Exception as e:
+        print(e)
 
     root = Tk()
     root.title(f"{username} - Menu")
